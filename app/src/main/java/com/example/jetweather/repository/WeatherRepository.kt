@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(val weatherApi: WeatherApi) {
 
-    private var result: MutableState<ResultState<WeatherObject>> = mutableStateOf(ResultState.Loading)
+    private var result: MutableState<ResultState<WeatherObject>> =
+        mutableStateOf(ResultState.Loading)
 
     suspend fun getWeather(
         cityName: String,
