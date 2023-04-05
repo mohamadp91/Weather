@@ -1,6 +1,6 @@
 package com.example.jetweather.network
 
-import com.example.jetweather.models.Weather
+import com.example.jetweather.models.WeatherObject
 import com.example.jetweather.util.API_KEY
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,6 +14,6 @@ interface WeatherApi {
         @Query(value = "q") query: String,
         @Query(value = "units") units: String,
         @Query(value = "appid") appid: String = API_KEY
-    ): Weather
+    ): WeatherObject
 
 }
