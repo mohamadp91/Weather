@@ -1,9 +1,9 @@
 package com.example.jetweather.models
 
-data class Weather(
+data class WeatherObject(
     val city: City,
     val cnt: Int,
     val cod: String,
-    val weatherForecastList: List<WeatherForecast>,
+    val list: List<WeatherForecast>,
     val message: Int
 )
