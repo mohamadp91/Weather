@@ -55,7 +55,7 @@ fun JetWeatherTheme(
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
             ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-                val controller = WindowInsetsControllerCompat(window,view)
+                val controller = WindowInsetsControllerCompat(window, view)
                 controller.isAppearanceLightStatusBars = darkTheme
                 insets
             }

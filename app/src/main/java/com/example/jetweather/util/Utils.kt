@@ -1,7 +1,7 @@
 package com.example.jetweather.util
 
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 object Utils {
     fun formatDecimal(value: Double): String = "%.0f".format(value)
