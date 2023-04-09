@@ -23,6 +23,7 @@ import com.example.jetweather.widgets.WeatherTopBar
 @Composable
 fun MainScreen(
     navController: NavController,
+    cityName: String,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
     Column(
@@ -34,7 +35,7 @@ fun MainScreen(
             produceState<ResultState<WeatherObject>>(
                 initialValue = ResultState.Loading,
                 producer = {
-                    value = mainViewModel.getWeather("moscow", "imperial")
+                    value = mainViewModel.getWeather(cityName, "imperial")
                 })
         when (result.value) {
             is ResultState.Loading -> CircularProgressIndicator(modifier = Modifier.size(50.dp))
@@ -58,7 +59,6 @@ fun MainScaffold(
             navController = navController,
             title = "${weatherObject.city.name}/${weatherObject.city.country}",
             isMainScreen = true,
-            onAddActionClicked = {},
             onButtonClicked = {},
         )
     }) {
