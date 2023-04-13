@@ -1,6 +1,7 @@
 package com.example.jetweather.widgets
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +40,10 @@ fun WeatherTopBar(
     val shouldOpenMenu = remember {
         mutableStateOf(false)
     }
+    val showIt = remember {
+        mutableStateOf(false)
+    }
+    val context = LocalContext.current
 
     TopAppBar(title = {
         Text(
@@ -81,34 +87,46 @@ fun WeatherTopBar(
                 val dataList = title.split("/")
                 val favoriteModel = FavoriteModel(dataList[0], dataList[1])
                 val isFavorite = remember {
-                    mutableStateOf(favoritesViewModel.isFavorite(favoriteModel.city))
+                    mutableStateOf(false)
                 }
+                isFavorite.value = favoritesViewModel.isFavorite(favoriteModel.city)
 
-                AddFavorite(isFavorite.value) { value ->
+                AddFavorite(isFavorite) { value ->
                     isFavorite.value = value
                     if (value) {
-                        favoritesViewModel.insertFavorite(favoriteModel)
+                        favoritesViewModel.insertFavorite(favoriteModel).run {
+                            showIt.value = true
+                        }
                     } else {
                         favoritesViewModel.deleteFavorite(favoriteModel)
                     }
                 }
+                ShowFavoriteToast(context = context, showIt = showIt)
             }
         })
 }
 
 @Composable
 fun AddFavorite(
-    isFavorite: Boolean,
+    isFavorite: MutableState<Boolean>,
     onCheckedChange: (Boolean) -> Unit
 ) {
     IconButton(onClick = {
-        onCheckedChange(!isFavorite)
+        onCheckedChange(!isFavorite.value)
     }) {
         Icon(
             imageVector = Icons.Rounded.Favorite,
             contentDescription = "",
-            tint = if (isFavorite) Color.Red.copy(alpha = .8f) else Color.LightGray,
+            tint = if (isFavorite.value) Color.Red.copy(alpha = .8f) else Color.LightGray,
             modifier = Modifier.scale(.9f)
         )
+    }
+}
+
+@Composable
+fun ShowFavoriteToast(context: Context, showIt: MutableState<Boolean>) {
+    if (showIt.value) {
+        Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show()
+        showIt.value = false
     }
 }
