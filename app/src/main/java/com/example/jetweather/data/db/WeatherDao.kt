@@ -5,7 +5,7 @@ import com.example.jetweather.models.FavoriteModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface FavoritesDao {
+interface WeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavorite(favoriteModel: FavoriteModel)

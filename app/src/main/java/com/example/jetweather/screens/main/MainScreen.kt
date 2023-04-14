@@ -6,6 +6,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,14 +19,18 @@ import com.example.jetweather.components.TopContent
 import com.example.jetweather.components.WeatherHistory
 import com.example.jetweather.data.ResultState
 import com.example.jetweather.models.WeatherObject
+import com.example.jetweather.screens.settings.SettingViewModel
 import com.example.jetweather.widgets.WeatherTopBar
 
 @Composable
 fun MainScreen(
     navController: NavController,
     cityName: String,
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    settingViewModel: SettingViewModel = hiltViewModel()
 ) {
+    val unit = settingViewModel.unit.collectAsState().value
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -35,7 +40,7 @@ fun MainScreen(
             produceState<ResultState<WeatherObject>>(
                 initialValue = ResultState.Loading,
                 producer = {
-                    value = mainViewModel.getWeather(cityName, "imperial")
+                    value = mainViewModel.getWeather(cityName, unit)
                 })
         when (result.value) {
             is ResultState.Loading -> CircularProgressIndicator(modifier = Modifier.size(50.dp))

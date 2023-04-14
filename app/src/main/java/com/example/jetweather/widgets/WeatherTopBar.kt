@@ -58,7 +58,8 @@ fun WeatherTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent)
-            .shadow(6.dp), actions = {
+            .shadow(6.dp),
+        actions = {
             if (isMainScreen) {
                 IconButton(onClick = {
                     navController.navigate(WeatherScreens.SearchScreen.name)
