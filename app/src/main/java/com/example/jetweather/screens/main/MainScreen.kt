@@ -18,14 +18,21 @@ import com.example.jetweather.components.TopContent
 import com.example.jetweather.components.WeatherHistory
 import com.example.jetweather.data.ResultState
 import com.example.jetweather.models.WeatherObject
+import com.example.jetweather.screens.settings.SettingViewModel
 import com.example.jetweather.widgets.WeatherTopBar
 
 @Composable
 fun MainScreen(
     navController: NavController,
     cityName: String,
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    settingViewModel: SettingViewModel = hiltViewModel()
 ) {
+    val unit = produceState<String>(initialValue = "metric", producer = {
+        value = settingViewModel.readUnit()
+    })
+    println("$unit    main screen")
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -35,7 +42,7 @@ fun MainScreen(
             produceState<ResultState<WeatherObject>>(
                 initialValue = ResultState.Loading,
                 producer = {
-                    value = mainViewModel.getWeather(cityName, "imperial")
+                    value = mainViewModel.getWeather(cityName, unit.value)
                 })
         when (result.value) {
             is ResultState.Loading -> CircularProgressIndicator(modifier = Modifier.size(50.dp))
