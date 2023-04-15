@@ -12,13 +12,13 @@ import javax.inject.Singleton
 @Singleton
 class SettingsDataStore @Inject constructor(private val dataStore: DataStore<Preferences>) {
 
-    suspend fun readUnit(): String = dataStore.data.map { preferences ->
-        preferences[UNIT_KEY] ?: "metric"
+    suspend fun readUnit(): String? = dataStore.data.map { preferences ->
+        preferences[UNIT_KEY]
     }.first()
 
-    suspend fun writeUnit(username: String) {
+    suspend fun writeUnit(unit: String) {
         dataStore.edit { preferences ->
-            preferences[UNIT_KEY] = username
+            preferences[UNIT_KEY] = unit
         }
     }
 

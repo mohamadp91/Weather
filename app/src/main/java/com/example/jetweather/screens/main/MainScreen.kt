@@ -6,7 +6,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +28,10 @@ fun MainScreen(
     mainViewModel: MainViewModel = hiltViewModel(),
     settingViewModel: SettingViewModel = hiltViewModel()
 ) {
-    val unit = settingViewModel.unit.collectAsState().value
+    val unit = produceState<String>(initialValue = "metric", producer = {
+        value = settingViewModel.readUnit()
+    })
+    println("$unit    main screen")
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -40,7 +42,7 @@ fun MainScreen(
             produceState<ResultState<WeatherObject>>(
                 initialValue = ResultState.Loading,
                 producer = {
-                    value = mainViewModel.getWeather(cityName, unit)
+                    value = mainViewModel.getWeather(cityName, unit.value)
                 })
         when (result.value) {
             is ResultState.Loading -> CircularProgressIndicator(modifier = Modifier.size(50.dp))

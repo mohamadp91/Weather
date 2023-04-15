@@ -19,9 +19,7 @@ import com.example.jetweather.widgets.WeatherTopBar
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    settingViewModel: SettingViewModel = hiltViewModel()
 ) {
-    val unit = settingViewModel.unit.collectAsState().value
 
     Scaffold(topBar = {
         WeatherTopBar(
@@ -39,7 +37,7 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            UnitSettings(unit = unit,
+            UnitSettings(
                 onSubmitClicked = { navController.popBackStack() })
         }
     }
@@ -47,14 +45,16 @@ fun SettingsScreen(
 
 @Composable
 fun UnitSettings(
-    unit: String,
     onSubmitClicked: () -> Unit,
     settingViewModel: SettingViewModel = hiltViewModel()
 ) {
+    val unit = produceState(initialValue = "metric", producer = {
+        value = settingViewModel.readUnit()
+    })
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedUnit by remember {
-        mutableStateOf(unit)
+    var selectedUnit = remember(unit.value) {
+        mutableStateOf(unit.value)
     }
 
     Column(verticalArrangement = Arrangement.Top) {
@@ -67,7 +67,7 @@ fun UnitSettings(
             horizontalArrangement = Arrangement.Start
         ) {
             Text(
-                text = findKeyByValue(selectedUnit) ?: UNIT_MAP.keys.first(),
+                text = UNIT_MAP.getValue(selectedUnit.value),
             )
             Icon(
                 imageVector = if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
@@ -82,12 +82,12 @@ fun UnitSettings(
                     expanded = false
                 }
             ) {
-                UNIT_MAP.keys.forEach { selectionOption ->
+                UNIT_MAP.values.forEach { selectionOption ->
                     DropdownMenuItem(text = {
                         Text(text = selectionOption)
                     },
                         onClick = {
-                            selectedUnit = UNIT_MAP.getValue(selectionOption)
+                            selectedUnit.value = findKeyByValue(selectionOption)
                             expanded = false
                         }
                     )
@@ -103,7 +103,7 @@ fun UnitSettings(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = {
-                saveUnitSettings(selectedUnit, settingViewModel)
+                saveUnitSettings(selectedUnit.value, settingViewModel)
                 onSubmitClicked.invoke()
             }) {
                 Icon(
@@ -126,15 +126,15 @@ private fun saveUnitSettings(
 }
 
 private val UNIT_MAP = mapOf(
-    "Celsius °C" to "metric",
-    "Fahrenheit °F" to "imperial",
+    "metric" to "Celsius °C",
+    "imperial" to "Fahrenheit °F",
 )
 
-fun findKeyByValue(targetValue: String): String? {
+fun findKeyByValue(targetValue: String): String {
     for ((key, value) in UNIT_MAP) {
         if (value == targetValue) {
             return key
         }
     }
-    return null
+    return UNIT_MAP.keys.first()
 }
