@@ -1,5 +1,4 @@
 # Jet Weather
-
 ___
 <br/>
 <img src="shots/Vector(1).png" alt="Alt Text" width="400" height="500">
@@ -24,6 +23,7 @@ how to set up and utilize the app effectively. Features
 
 * Automatic Data Updates: Weather data is refreshed at regular intervals, ensuring that you always have access to the
   latest weather conditions.
+
 
 ### Prerequisites
 
